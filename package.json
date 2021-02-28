@@ -8,10 +8,7 @@
     "npm": "6.9.0"
   },
   "scripts": {
-		"build": "tsc",
-    "start:build": "tsc",
-    "start:run": "nodemon build/server.js",
-    "start": "concurrently npm:start:*"
+		"start": "node build/server.js"
   },
   "author": "",
   "license": "ISC",
