@@ -42,7 +42,7 @@ class AuthController {
             person: newPerson
           })
           res.status(200).send({
-            ...newUser,
+            user: newUser.person,
             token: tokenForUser(email)
           })
         })
