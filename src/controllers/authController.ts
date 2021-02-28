@@ -56,7 +56,7 @@ class AuthController {
   @use(requestValidator(['email', 'password'], 'body'))
   @use(signIn)
   async signin(req: Request, res: Response) {
-    res.send({ token: tokenForUser(res.locals.user.email), user: res.locals.user })
+    res.send({ token: tokenForUser(res.locals.user.email), user: res.locals.user.person })
   }
 
 }

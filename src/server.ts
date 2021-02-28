@@ -11,6 +11,7 @@ const socketIO = require('./WebSocket')
 import './controllers/rootController'
 import './controllers/authController'
 import './controllers/personController'
+import './controllers/photoController'
 import { Person } from './entity/Person'
 import { User } from './entity/User'
 
@@ -18,8 +19,8 @@ createConnection().then(() => {
   const app = express()
   app.use(cors())
   app.use(morgan(':method :url :status :response-time ms'))
-  app.use(bodyParser.urlencoded({ extended: true }))
-  app.use(bodyParser.json({ type: '*/*' }))
+  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
+  app.use(bodyParser.json({ type: '*/*', limit: '50mb' }))
   app.use(AppRouter.getInstance());
   const httpServer = createServer(app)
   socketIO.connect(httpServer)

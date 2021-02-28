@@ -46,7 +46,7 @@ class PersonController {
   @use(requestValidator(['id'], 'body'))
   async addPerson(req: Request, res: Response) {
     const repo = getRepository(Person)
-    var { id, firstName, avatar, prevAvatar} = req.body
+    var { id, name, avatar, prevAvatar} = req.body
     // update avatar in AWS S3 bucket
     if (avatar) {
       const type = avatar.split(';')[0].split('/')[1]
@@ -90,7 +90,7 @@ class PersonController {
     
     const personData = {
       id, 
-      firstName: firstName || null,
+      name: name || null,
       avatar: avatar || prevAvatar
     }
     try {
@@ -99,25 +99,6 @@ class PersonController {
     } catch (err) {
       console.log(err)
       res.status(500).send('An unexpected error has occured')
-    }
-  }
-
-  @get('/search')
-  // @use(requestValidator(['q'], 'query'))
-  @use(checkToken)
-  async searchPeople(req: Request, res: Response) {
-    const { q } = req.query
-    if (!q) res.status(422).send('Invalid Request')
-    else {
-      try {
-        const result = await getRepository(Person).createQueryBuilder('person')
-        .where('person.firstName ILIKE :q', { q: `%${q}%`})
-        .getMany()
-        res.status(200).send(result)
-      } catch (err) {
-        console.log(err)
-        res.status(500).send('An unexpected error has occured')
-      }
     }
   }
 }
