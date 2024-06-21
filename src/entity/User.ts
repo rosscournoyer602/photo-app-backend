@@ -1,16 +1,15 @@
 import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn } from "typeorm";
-import { Person } from './Person'
+import { Profile } from "./Profile";
 
 @Entity()
 export class User {
-
   @PrimaryColumn()
   email!: string;
 
   @Column()
-  password!: string
-  
-  @OneToOne(type => Person)
+  password!: string;
+
+  @OneToOne(() => Profile)
   @JoinColumn()
-  person!: Person
+  profile!: Profile;
 }
