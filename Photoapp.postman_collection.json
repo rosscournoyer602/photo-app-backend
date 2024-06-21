@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "0ec58a82-0758-4073-9c4b-aaaefd1b50d6",
+		"name": "Photoapp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2455847"
+	},
+	"item": [
+		{
+			"name": "Sign in",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let body = pm.response.body;",
+							"console.log('t', pm.response.body)",
+							"const current_environment = pm.environment.name;",
+							"console.log('ENV', current_environment)",
+							"pm.environment.set('token', body[\"token\"]);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"youvegotmail@aol.com\",\n    \"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/signin",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Healthcheck",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Profiles",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "abc12345",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/people",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"people"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Profile by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "abc12345",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/people",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"people"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign up",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"youvegotmail@aol.com\",\n    \"password\": \"password\",\n    \"confirmPassword\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
