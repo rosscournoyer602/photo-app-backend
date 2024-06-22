@@ -4,15 +4,19 @@ import { getConnection, getRepository } from "typeorm";
 import { Profile } from "../entity/Profile";
 import { checkToken } from "../middleware/requireSignin";
 import { requestValidator } from "../middleware/requestValidator";
-import S3 from "aws-sdk/clients/s3";
+import {
+  S3Client,
+  DeleteObjectsCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 
 const credentials = {
-  secretAccessKey: process.env.S3KEY,
-  accessKeyId: process.env.S3KEYID,
-  region: "ap-northeast-1",
+  secretAccessKey: process.env.S3_KEY,
+  accessKeyId: process.env.S3_KEY,
+  region: process.env.S3_REGION,
 };
 
-const s3 = new S3(credentials);
+const s3 = new S3Client(credentials);
 
 @controller("")
 class ProfileController {
@@ -53,25 +57,26 @@ class ProfileController {
         avatar.replace(/^data:image\/\w+;base64,/, ""),
         "base64"
       );
-      const params = {
-        Bucket: "friendo3",
-        Key: `${id}${Date.now()}.${type}`,
+      const key = `${id}${Date.now()}.${type}`;
+      const putObjectParams = {
+        Bucket: process.env.S3_BUCKET,
+        Key: key,
         Body: buffer,
-        ACL: "public-read",
         ContentEncoding: "base64",
         ContentType: `image/${type}`,
       };
       // delete any old avatar for this user i
       if (prevAvatar) {
         const deleteParams = {
-          Bucket: "friendo3",
+          Bucket: process.env.S3_BUCKET,
           Delete: {
             Objects: [{ Key: `${prevAvatar}` }],
           },
         };
         try {
-          const deleteResults = await s3.deleteObjects(deleteParams).promise();
-          console.log(deleteResults);
+          const deleteCommand = new DeleteObjectsCommand(deleteParams);
+          const response = await s3.send(deleteCommand);
+          console.log(response);
         } catch (err) {
           console.log(err);
           res.status(500).send("An unexpected error has occured");
@@ -79,8 +84,9 @@ class ProfileController {
       }
       // save avatar to s3 and return URL
       try {
-        const uploadResults = await s3.upload(params).promise();
-        avatar = uploadResults.Key;
+        const putObjectCommand = new PutObjectCommand(putObjectParams);
+        const uploadResults = await s3.send(putObjectCommand);
+        avatar = key;
         console.log(uploadResults);
       } catch (err) {
         console.log(err);

@@ -1,4 +1,4 @@
-# Express server using TypeORM, and Passport.js JWT authentication
+# Photo app
 
 ### Getting started
 
