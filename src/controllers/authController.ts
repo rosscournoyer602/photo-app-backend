@@ -3,7 +3,7 @@ import jwt from "jwt-simple";
 import bcrypt from "bcrypt";
 import { get, post, controller, use } from "./decorators";
 import { signIn } from "../middleware/requireSignin";
-import { getRepository } from "typeorm";
+import { AppDataSource } from "../server";
 import { User } from "../entity/User";
 import { Profile } from "../entity/Profile";
 import { requestValidator } from "../middleware/requestValidator";
@@ -22,9 +22,9 @@ class AuthController {
   @use(requestValidator(["email", "password", "confirmPassword"], "body"))
   async signup(req: Request, res: Response) {
     const { email } = req.body;
-    const userRepo = getRepository(User);
-    const ProfileRepo = getRepository(Profile);
-    const user = await userRepo.findOne({ email });
+    const userRepo = AppDataSource.getRepository(User);
+    const profileRepo = AppDataSource.getRepository(Profile);
+    const user = await userRepo.findOneBy({ email });
     if (req.body.password !== req.body.confirmPassword) {
       res.send("Passwords do not match");
     }
@@ -37,7 +37,7 @@ class AuthController {
             console.log(err);
             res.status(500).send("An unexpected error has occured");
           }
-          const newProfile = await ProfileRepo.save({});
+          const newProfile = await profileRepo.save({});
           const newUser = await userRepo.save({
             email: req.body.email,
             password: hash,

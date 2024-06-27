@@ -2,7 +2,7 @@ import { Strategy, ExtractJwt, VerifiedCallback } from "passport-jwt";
 import passportLocal from "passport-local";
 import passport from "passport";
 import bcrypt from "bcrypt";
-import { getRepository } from "typeorm";
+import { AppDataSource } from "../server";
 import { User } from "../entity/User";
 
 const LocalStrategy = passportLocal.Strategy;
@@ -12,7 +12,7 @@ passport.use(
     { usernameField: "email" },
     async (email: string, password: string, done: VerifiedCallback) => {
       try {
-        const user = await getRepository(User).findOne({
+        const user = await AppDataSource.getRepository(User).findOne({
           where: { email },
           relations: ["profile"],
         });
@@ -52,7 +52,7 @@ const params = {
 passport.use(
   new Strategy(params, async (payload: any, done: VerifiedCallback) => {
     try {
-      const user = await getRepository(User).findOne({
+      const user = await AppDataSource.getRepository(User).findOne({
         where: { email: payload.sub },
         relations: ["profile"],
       });

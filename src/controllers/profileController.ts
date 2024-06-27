@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { get, put, controller, use } from "./decorators";
-import { getConnection, getRepository } from "typeorm";
+import { AppDataSource } from "../server";
 import { Profile } from "../entity/Profile";
 import { checkToken } from "../middleware/requireSignin";
 import { requestValidator } from "../middleware/requestValidator";
@@ -24,7 +24,7 @@ class ProfileController {
   @use(checkToken)
   async getProfiles(req: Request, res: Response) {
     try {
-      const profiles = await getRepository(Profile).find();
+      const profiles = await AppDataSource.getRepository(Profile).find();
       res.status(200).send(profiles);
     } catch (err) {
       console.log(err);
@@ -35,9 +35,11 @@ class ProfileController {
   @get("/profile")
   @use(checkToken)
   async getProfile(req: Request, res: Response) {
-    const id = req.query.id as string;
+    const id = parseInt(req.query.id as string);
     try {
-      const profile = await getRepository(Profile).findOne(id);
+      const profile = await AppDataSource.getRepository(Profile).findOneBy({
+        id,
+      });
       res.status(200).send(profile);
     } catch (err) {
       res.status(500).send("An unexpecter error has occured");
@@ -48,7 +50,7 @@ class ProfileController {
   @use(checkToken)
   @use(requestValidator(["id"], "body"))
   async addProfile(req: Request, res: Response) {
-    const repo = getRepository(Profile);
+    const repo = AppDataSource.getRepository(Profile);
     var { id, name, avatar, prevAvatar } = req.body;
     // update avatar in AWS S3 bucket
     if (avatar) {
