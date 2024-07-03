@@ -75,8 +75,7 @@ class ProfileController {
         };
         try {
           const deleteCommand = new DeleteObjectsCommand(deleteParams);
-          const deleteResponse = await s3.send(deleteCommand);
-          console.info("DELETERESPONSE", deleteResponse);
+          await s3.send(deleteCommand);
         } catch (err) {
           res.status(500).send(`S3 Delete: ${err}`);
           console.log(err);
@@ -85,9 +84,8 @@ class ProfileController {
       // save avatar to s3 and return URL
       try {
         const putObjectCommand = new PutObjectCommand(putObjectParams);
-        const uploadResponse = await s3.send(putObjectCommand);
+        await s3.send(putObjectCommand);
         avatar = key;
-        console.info(uploadResponse);
       } catch (err) {
         res.status(500).send(`S3 Upload: ${err}`);
         console.log(err);
