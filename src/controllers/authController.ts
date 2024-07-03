@@ -41,10 +41,10 @@ class AuthController {
           const newUser = await userRepo.save({
             email: req.body.email,
             password: hash,
-            Profile: newProfile,
+            profile: newProfile,
           });
           res.status(200).send({
-            user: newUser.Profile,
+            profile: newUser.profile,
             token: tokenForUser(email),
           });
         });
@@ -60,7 +60,7 @@ class AuthController {
   async signin(req: Request, res: Response) {
     res.send({
       token: tokenForUser(res.locals.user.email),
-      user: res.locals.user.Profile,
+      profile: res.locals.user.profile,
     });
   }
 }

@@ -45,7 +45,7 @@ passport.use(
 );
 
 const params = {
-  secretOrKey: process.env.APP_SECRET,
+  secretOrKey: process.env.APP_SECRET || "secret",
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 };
 

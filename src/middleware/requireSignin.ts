@@ -10,7 +10,9 @@ export function signIn(req: Request, res: Response, next: NextFunction) {
     if (!user) {
       res.status(401).send("Unauthorized. User not found.");
     } else {
+      console.log("USER", user);
       res.locals.user = user;
+      console.log("USER", res.locals.user);
       next();
     }
   })(req, res, next);

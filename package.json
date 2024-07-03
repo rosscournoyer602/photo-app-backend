@@ -4,8 +4,7 @@
   "description": "An express app",
   "main": "server.js",
   "scripts": {
-    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
-    "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
+    "seed": "node seed.js",
     "build": "tsc",
     "dev:build": "tsc",
     "dev:run": "nodemon build/server.js",
@@ -16,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.600.0",
+    "@aws-sdk/credential-providers": "^3.609.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "concurrently": "^5.1.0",

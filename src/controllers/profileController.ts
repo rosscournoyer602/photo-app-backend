@@ -9,14 +9,12 @@ import {
   DeleteObjectsCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
+import { fromEnv } from "@aws-sdk/credential-providers";
 
-const credentials = {
-  secretAccessKey: process.env.S3_KEY,
-  accessKeyId: process.env.S3_KEY,
+const s3 = new S3Client({
   region: process.env.S3_REGION,
-};
-
-const s3 = new S3Client(credentials);
+  credentials: fromEnv(),
+});
 
 @controller("")
 class ProfileController {
@@ -77,22 +75,22 @@ class ProfileController {
         };
         try {
           const deleteCommand = new DeleteObjectsCommand(deleteParams);
-          const response = await s3.send(deleteCommand);
-          console.log(response);
+          const deleteResponse = await s3.send(deleteCommand);
+          console.info("DELETERESPONSE", deleteResponse);
         } catch (err) {
+          res.status(500).send(`S3 Delete: ${err}`);
           console.log(err);
-          res.status(500).send("An unexpected error has occured");
         }
       }
       // save avatar to s3 and return URL
       try {
         const putObjectCommand = new PutObjectCommand(putObjectParams);
-        const uploadResults = await s3.send(putObjectCommand);
+        const uploadResponse = await s3.send(putObjectCommand);
         avatar = key;
-        console.log(uploadResults);
+        console.info(uploadResponse);
       } catch (err) {
+        res.status(500).send(`S3 Upload: ${err}`);
         console.log(err);
-        res.status(500).send("An unexpected error has occured");
       }
     }
 
